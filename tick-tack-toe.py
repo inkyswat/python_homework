@@ -1,6 +1,6 @@
 
-#import subprocess # subprocess võimaldab antud kontekstis os'ile käske saata
-import os #oleks alternatiiv, kuid try ei suuda seda errorit kinni püüda
+
+import os  # võimaldab antud kontekstis os'ile käske saata
 
 alustaja_valitud = False
 roll = ""
@@ -16,15 +16,10 @@ sisu_test = True
 # ================
 def tyhjenda_ekraan():
 	os.system('cls' if os.name=='nt' else 'clear')
-#    try:
- #       subprocess.call('cls')
-  #  except:
-   #     subprocess.call('clear')
-
 
 def tyhi_tabel():
     global teade
-    print("")
+    print("\033[92m")
     print("           A       B       C")
     print("")
     print("       -------------------------")
@@ -42,7 +37,7 @@ def tyhi_tabel():
     print("       -------------------------")
     print(teade)
     print(veateade)
-    print("________________________________")
+    print("\033[90m________________________________")
 
 
 def kysi_koordinaadid():
@@ -54,11 +49,11 @@ def kysi_koordinaadid():
         tyhjenda_ekraan()
         tyhi_tabel()
 
-        rida = input("Sisesta palun rida (1 - 3) ")
+        rida = input("\033[90mSisesta palun rida (1 - 3) ")
         try:
             rida = int(rida)
             rida -= 1  # et array index oleks õige vähendame rida
-            veerg = input("ja nüüd palun veerg (a - c) ")
+            veerg = input("\033[90mja nüüd palun veerg (a - c) ")
             veerg = veerg.lower()
             if ((rida >= 0 and rida <= 2) and (veerg == "a" or veerg == "b" or veerg == "c")):
                 if (veerg == "a"):
@@ -72,10 +67,10 @@ def kysi_koordinaadid():
                 veateade = ""
             else:
                 korrektsed_koordinaadid = False  
-                veateade = f"mängija \'{roll}\' poolt valesti sisestatud koordinaadid"
+                veateade = f"\033[91mmängija \'{roll}\' poolt valesti sisestatud koordinaadid"
         except ValueError:
             korrektsed_koordinaadid = False
-            veateade = f"mängija \'{roll}\' poolt valesti sisestatud koordinaadid"
+            veateade = f"\033[91mmängija \'{roll}\' poolt valesti sisestatud koordinaadid"
 
 
 def kysi_roll():
@@ -84,7 +79,7 @@ def kysi_roll():
     while (not alustaja_valitud):
         tyhjenda_ekraan()
         tyhi_tabel()
-        roll = input("Kumb enne, kas \'o\' või \'x\'? ")
+        roll = input("\033[90mKumb enne, kas \'o\' või \'x\'? ")
         if (roll == "o" or roll == "x" or roll == "O" or roll == "X"):
             roll = roll.lower()
             alustaja_valitud = True
@@ -107,10 +102,10 @@ def rolli_muutmine(_roll):
     global teade
     if (_roll == "x"):
         roll = "o"
-        teade = f"Preagu on mängija \'{roll}\' kord"
+        teade = f"\033[93mPreagu on mängija \'{roll}\' kord"
     else:
         roll = "x"
-        teade = f"Preagu on mängija \'{roll}\' kord"
+        teade = f"\033[96mPreagu on mängija \'{roll}\' kord"
 # ==========================
 # Start
 # ==========================
@@ -118,12 +113,12 @@ tyhjenda_ekraan()
 tyhi_tabel()
 
 kysi_roll()
-teade = f"Preagu on mängija \'{roll}\' kord"
+teade = f"\033[96mPreagu on mängija \'{roll}\' kord"
 for x in range(4):
     kysi_koordinaadid()
     sisu_seis_ok = sisu_kontroll(rida, veerg)
     while (not sisu_seis_ok):
-        veateade = "Seal on juba olemas"
+        veateade = "\033[97mSeal on juba olemas"
         kysi_koordinaadid()
         sisu_seis_ok = sisu_kontroll(rida, veerg)
     sisu_t2itmine(rida, veerg, roll)
