@@ -1,6 +1,6 @@
 
-import subprocess # subprocess võimaldab antud kontekstis os'ile käske saata
-# 'import os' oleks alternatiiv, kuid try ei suuda seda errorit kinni püüda
+#import subprocess # subprocess võimaldab antud kontekstis os'ile käske saata
+import os #oleks alternatiiv, kuid try ei suuda seda errorit kinni püüda
 
 alustaja_valitud = False
 roll = ""
@@ -15,10 +15,11 @@ sisu_test = True
 # FUNKTISOONID
 # ================
 def tyhjenda_ekraan():
-    try:
-        subprocess.call('cls')
-    except:
-        subprocess.call('clear')
+	os.system('cls' if os.name=='nt' else 'clear')
+#    try:
+ #       subprocess.call('cls')
+  #  except:
+   #     subprocess.call('clear')
 
 
 def tyhi_tabel():
