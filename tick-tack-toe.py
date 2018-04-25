@@ -1,7 +1,9 @@
 
 
-import os  # võimaldab antud kontekstis os'ile käske saata
-
+import os  # võimaldab os'ile käske saata
+import platform # os'i platvormi vahendid
+platvorm = platform.system()
+color_os = 0
 alustaja_valitud = False
 roll = ""
 hetke_seis = [[0,0,0],[0,0,0],[0,0,0]]
@@ -11,15 +13,65 @@ teade = ""
 veateade = ""
 m2ng_l2bi = False
 sisu_test = True
+
 # ================
 # FUNKTISOONID
 # ================
+class v2rvid:
+    CEND      = ['\33[0m',''] # värvi lõpetamiseks (näiteks: vilkumine))
+    CBOLD     = ['\33[1m', '']
+    CITALIC   = ['\33[3m', '']
+    CURL      = ['\33[4m', '']
+    CBLINK    = ['\33[5m', '']
+    CBLINK2   = ['\33[6m', '']
+    CSELECTED = ['\33[7m', '']
+
+    CBLACK    = ['\33[30m', '']
+    CRED      = ['\33[31m', '']
+    CGREEN    = ['\33[32m', '']
+    CYELLOW   = ['\33[33m', '']
+    CBLUE     = ['\33[34m', '']
+    CVIOLET   = ['\33[35m', '']
+    CBEIGE    = ['\33[36m', '']
+    CWHITE    = ['\33[37m', '']
+# background colors
+    CBLACKBG  = ['\33[40m', '']
+    CREDBG    = ['\33[41m', '']
+    CGREENBG  = ['\33[42m', '']
+    CYELLOWBG = ['\33[43m', '']
+    CBLUEBG   = ['\33[44m', '']
+    CVIOLETBG = ['\33[45m', '']
+    CBEIGEBG  = ['\33[46m', '']
+    CWHITEBG  = ['\33[47m', '']
+
+    CGREY     = ['\33[90m', '']
+    CRED2     = ['\33[91m', '']
+    CGREEN2   = ['\33[92m', '']
+    CYELLOW2  = ['\33[93m', '']
+    CBLUE2    = ['\33[94m', '']
+    CVIOLET2  = ['\33[95m', '']
+    CBEIGE2   = ['\33[96m', '']
+    CWHITE2   = ['\33[97m', '']
+
+    CGREYBG    = ['\33[100m', '']
+    CREDBG2    = ['\33[101m', '']
+    CGREENBG2  = ['\33[102m', '']
+    CYELLOWBG2 = ['\33[103m', '']
+    CBLUEBG2   = ['\33[104m', '']
+    CVIOLETBG2 = ['\33[105m', '']
+    CBEIGEBG2  = ['\33[106m', '']
+    CWHITEBG2  = ['\33[107m', '']
+
+def platvorm_ja_v2rvid():
+    global platvorm
+    if (platvorm == "Windows"):
+        print()
 def tyhjenda_ekraan():
 	os.system('cls' if os.name=='nt' else 'clear')
 
-def tyhi_tabel():
+def kuva_tabel():
     global teade
-    print("\033[92m")
+    print(v2rvid.CBEIGE[color_os])
     print("           A       B       C")
     print("")
     print("       -------------------------")
@@ -37,7 +89,7 @@ def tyhi_tabel():
     print("       -------------------------")
     print(teade)
     print(veateade)
-    print("\033[90m________________________________")
+    print(v2rvid.CGREY[color_os] + "________________________________")
 
 
 def kysi_koordinaadid():
@@ -47,13 +99,13 @@ def kysi_koordinaadid():
     korrektsed_koordinaadid = False
     while (not korrektsed_koordinaadid):
         tyhjenda_ekraan()
-        tyhi_tabel()
+        kuva_tabel()
 
-        rida = input("\033[90mSisesta palun rida (1 - 3) ")
+        rida = input(v2rvid.CBOLD[color_os] + v2rvid.CGREY[color_os] + "Sisesta palun rida (1 - 3) " + v2rvid.CEND[color_os])
         try:
             rida = int(rida)
             rida -= 1  # et array index oleks õige vähendame rida
-            veerg = input("\033[90mja nüüd palun veerg (a - c) ")
+            veerg = input(v2rvid.CBOLD[color_os] + v2rvid.CGREY[color_os] + "ja nüüd palun veerg (a - c) " + v2rvid.CEND[color_os])
             veerg = veerg.lower()
             if ((rida >= 0 and rida <= 2) and (veerg == "a" or veerg == "b" or veerg == "c")):
                 if (veerg == "a"):
@@ -67,22 +119,27 @@ def kysi_koordinaadid():
                 veateade = ""
             else:
                 korrektsed_koordinaadid = False  
-                veateade = f"\033[91mmängija \'{roll}\' poolt valesti sisestatud koordinaadid"
+                veateade = v2rvid.CBLINK[color_os] + v2rvid.CRED2[color_os] + f"mängija {roll} poolt valesti sisestatud koordinaadid" + v2rvid.CEND[color_os]
         except ValueError:
             korrektsed_koordinaadid = False
-            veateade = f"\033[91mmängija \'{roll}\' poolt valesti sisestatud koordinaadid"
+            veateade = v2rvid.CBLINK[color_os] + v2rvid.CRED2[color_os] + f"mängija {roll} poolt valesti sisestatud koordinaadid" + v2rvid.CEND[color_os]
 
 
 def kysi_roll():
     global roll
     global alustaja_valitud
+    global teade
     while (not alustaja_valitud):
         tyhjenda_ekraan()
-        tyhi_tabel()
-        roll = input("\033[90mKumb enne, kas \'o\' või \'x\'? ")
+        kuva_tabel()
+        roll = input(v2rvid.CGREEN2[color_os] + "Kumb enne, kas \'o\' või \'x\'? " + v2rvid.CEND[color_os])
         if (roll == "o" or roll == "x" or roll == "O" or roll == "X"):
             roll = roll.lower()
             alustaja_valitud = True
+            if (roll == "x"):
+                teade = v2rvid.CVIOLET[color_os] + "Preagu on mängija " + v2rvid.CURL[color_os] + v2rvid.CGREY[color_os] + f"{roll}" + v2rvid.CEND[color_os] + v2rvid.CVIOLET[color_os] + " kord" + v2rvid.CEND[color_os]
+            else:
+                teade = v2rvid.CVIOLET[color_os] + "Preagu on mängija " + v2rvid.CGREEN[color_os] + v2rvid.CURL[color_os] + f"{roll}" + v2rvid.CEND[color_os] + v2rvid.CVIOLET[color_os] + " kord" + v2rvid.CEND[color_os]
         else:
             alustaja_valitud = False
 
@@ -102,23 +159,32 @@ def rolli_muutmine(_roll):
     global teade
     if (_roll == "x"):
         roll = "o"
-        teade = f"\033[93mPreagu on mängija \'{roll}\' kord"
+        teade = v2rvid.CVIOLET[color_os] + "Preagu on mängija " + v2rvid.CGREEN[color_os] + v2rvid.CURL[color_os] + f"{roll}" + v2rvid.CEND[color_os] + v2rvid.CVIOLET[color_os] + " kord" + v2rvid.CEND[color_os]
     else:
         roll = "x"
-        teade = f"\033[96mPreagu on mängija \'{roll}\' kord"
+        teade = v2rvid.CVIOLET[color_os] + "Preagu on mängija " + v2rvid.CURL[color_os] + v2rvid.CGREY[color_os] + f"{roll}" + v2rvid.CEND[color_os] + v2rvid.CVIOLET[color_os] + " kord" + v2rvid.CEND[color_os]
+# massiivist mitme elemedi korraga accessimine
+# massiiv[1:3] => ühest kolmeni elemendid
+
 # ==========================
 # Start
 # ==========================
+if (platvorm == "Windows"):
+    color_os = 1
+else:
+    color_os = 0  
+# print(v2rvid.CGREEN2[color_os])
+# while True:
+#     print      
 tyhjenda_ekraan()
-tyhi_tabel()
+kuva_tabel()
 
 kysi_roll()
-teade = f"\033[96mPreagu on mängija \'{roll}\' kord"
 for x in range(4):
     kysi_koordinaadid()
     sisu_seis_ok = sisu_kontroll(rida, veerg)
     while (not sisu_seis_ok):
-        veateade = "\033[97mSeal on juba olemas"
+        veateade = v2rvid.CWHITE2[color_os] + "Seal on juba olemas"
         kysi_koordinaadid()
         sisu_seis_ok = sisu_kontroll(rida, veerg)
     sisu_t2itmine(rida, veerg, roll)
