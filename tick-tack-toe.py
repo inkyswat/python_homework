@@ -1,23 +1,23 @@
 
 
 import os  # võimaldab os'ile käske saata
-import platform # os'i platvormi vahendid
-platvorm = platform.system()
+import platform # os'i platformi vahendid
+platform = platform.system()
 color_os = 0
-alustaja_valitud = False
-roll = ""
-hetke_seis = [[0,0,0],[0,0,0],[0,0,0]]
-rida = ""
-veerg = ""
-teade = ""
-veateade = ""
-m2ng_l2bi = False
+RolePicked = False
+role = ""
+CurState = [[0,0,0],[0,0,0],[0,0,0]]
+row = ""
+column = ""
+Notific = ""
+ErrorMsg = ""
+GameOver = False
 sisu_test = True
 
 # ================
 # FUNKTISOONID
 # ================
-class v2rvid:
+class Colors:
     CEND      = ['\33[0m',''] # värvi lõpetamiseks (näiteks: vilkumine))
     CBOLD     = ['\33[1m', '']
     CITALIC   = ['\33[3m', '']
@@ -62,16 +62,16 @@ class v2rvid:
     CBEIGEBG2  = ['\33[106m', '']
     CWHITEBG2  = ['\33[107m', '']
 
-def platvorm_ja_v2rvid():
-    global platvorm
-    if (platvorm == "Windows"):
+def platform_ja_Colors():
+    global platform
+    if (platform == "Windows"):
         print()
-def tyhjenda_ekraan():
+def ClearScreen():
 	os.system('cls' if os.name=='nt' else 'clear')
 
-def kuva_tabel():
-    global teade
-    print(v2rvid.CBEIGE[color_os])
+def DisplayTable(): # pane siia sisend ja kontroll kuhu tulemus kirjutada
+    global Notific
+    print(Colors.CBEIGE[color_os])
     print("           A       B       C")
     print("")
     print("       -------------------------")
@@ -87,106 +87,106 @@ def kuva_tabel():
     print("   3   |       |       |       |")
     print("       |       |       |       |")
     print("       -------------------------")
-    print(teade)
-    print(veateade)
-    print(v2rvid.CGREY[color_os] + "________________________________")
+    print(Notific)
+    print(ErrorMsg)
+    print(Colors.CGREY[color_os] + "________________________________")
 
 
-def kysi_koordinaadid():
-    global rida
-    global veerg
-    global veateade
-    korrektsed_koordinaadid = False
-    while (not korrektsed_koordinaadid):
-        tyhjenda_ekraan()
-        kuva_tabel()
+def AskCoordinates():
+    global row
+    global column
+    global ErrorMsg
+    Coordin_ok = False
+    while (not Coordin_ok):
+        ClearScreen()
+        DisplayTable()
 
-        rida = input(v2rvid.CBOLD[color_os] + v2rvid.CGREY[color_os] + "Sisesta palun rida (1 - 3) " + v2rvid.CEND[color_os])
+        row = input(Colors.CBOLD[color_os] + Colors.CGREY[color_os] + "Sisesta palun row (1 - 3) " + Colors.CEND[color_os])
         try:
-            rida = int(rida)
-            rida -= 1  # et array index oleks õige vähendame rida
-            veerg = input(v2rvid.CBOLD[color_os] + v2rvid.CGREY[color_os] + "ja nüüd palun veerg (a - c) " + v2rvid.CEND[color_os])
-            veerg = veerg.lower()
-            if ((rida >= 0 and rida <= 2) and (veerg == "a" or veerg == "b" or veerg == "c")):
-                if (veerg == "a"):
-                    veerg = 0
-                if (veerg == "b"):
-                    veerg = 1
-                if (veerg == "c"):
-                    veerg = 2
+            row = int(row)
+            row -= 1  # et array index oleks õige vähendame row
+            column = input(Colors.CBOLD[color_os] + Colors.CGREY[color_os] + "ja nüüd palun column (a - c) " + Colors.CEND[color_os])
+            column = column.lower()
+            if ((row >= 0 and row <= 2) and (column == "a" or column == "b" or column == "c")):
+                if (column == "a"):
+                    column = 0
+                if (column == "b"):
+                    column = 1
+                if (column == "c"):
+                    column = 2
 
-                korrektsed_koordinaadid = True
-                veateade = ""
+                Coordin_ok = True
+                ErrorMsg = ""
             else:
-                korrektsed_koordinaadid = False  
-                veateade = v2rvid.CBLINK[color_os] + v2rvid.CRED2[color_os] + f"mängija {roll} poolt valesti sisestatud koordinaadid" + v2rvid.CEND[color_os]
+                Coordin_ok = False  
+                ErrorMsg = Colors.CBLINK[color_os] + Colors.CRED2[color_os] + f"mängija {role} poolt valesti sisestatud koordinaadid" + Colors.CEND[color_os]
         except ValueError:
-            korrektsed_koordinaadid = False
-            veateade = v2rvid.CBLINK[color_os] + v2rvid.CRED2[color_os] + f"mängija {roll} poolt valesti sisestatud koordinaadid" + v2rvid.CEND[color_os]
+            Coordin_ok = False
+            ErrorMsg = Colors.CBLINK[color_os] + Colors.CRED2[color_os] + f"mängija {role} poolt valesti sisestatud koordinaadid" + Colors.CEND[color_os]
 
 
-def kysi_roll():
-    global roll
-    global alustaja_valitud
-    global teade
-    while (not alustaja_valitud):
-        tyhjenda_ekraan()
-        kuva_tabel()
-        roll = input(v2rvid.CGREEN2[color_os] + "Kumb enne, kas \'o\' või \'x\'? " + v2rvid.CEND[color_os])
-        if (roll == "o" or roll == "x" or roll == "O" or roll == "X"):
-            roll = roll.lower()
-            alustaja_valitud = True
-            if (roll == "x"):
-                teade = v2rvid.CVIOLET[color_os] + "Preagu on mängija " + v2rvid.CURL[color_os] + v2rvid.CGREY[color_os] + f"{roll}" + v2rvid.CEND[color_os] + v2rvid.CVIOLET[color_os] + " kord" + v2rvid.CEND[color_os]
+def AskRole():
+    global role
+    global RolePicked
+    global Notific
+    while (not RolePicked):
+        ClearScreen()
+        DisplayTable()
+        role = input(Colors.CGREEN2[color_os] + "Kumb enne, kas \'o\' või \'x\'? " + Colors.CEND[color_os])
+        if (role == "o" or role == "x" or role == "O" or role == "X"):
+            role = role.lower()
+            RolePicked = True
+            if (role == "x"):
+                Notific = Colors.CVIOLET[color_os] + "Preagu on mängija " + Colors.CURL[color_os] + Colors.CGREY[color_os] + f"{role}" + Colors.CEND[color_os] + Colors.CVIOLET[color_os] + " kord" + Colors.CEND[color_os]
             else:
-                teade = v2rvid.CVIOLET[color_os] + "Preagu on mängija " + v2rvid.CGREEN[color_os] + v2rvid.CURL[color_os] + f"{roll}" + v2rvid.CEND[color_os] + v2rvid.CVIOLET[color_os] + " kord" + v2rvid.CEND[color_os]
+                Notific = Colors.CVIOLET[color_os] + "Preagu on mängija " + Colors.CGREEN[color_os] + Colors.CURL[color_os] + f"{role}" + Colors.CEND[color_os] + Colors.CVIOLET[color_os] + " kord" + Colors.CEND[color_os]
         else:
-            alustaja_valitud = False
+            RolePicked = False
 
-def sisu_kontroll(rida, veerg):
-    global hetke_seis
-    if (hetke_seis[rida][veerg] == 0):
+def sisu_kontrole(row, column):
+    global CurState
+    if (CurState[row][column] == 0):
         return True
     else:
         return False    
 
-def sisu_t2itmine(rida, veerg, _roll):
-    global hetke_seis
-    hetke_seis[rida][veerg] = _roll
+def FillArray(row, column, _role):
+    global CurState
+    CurState[row][column] = _role
     
-def rolli_muutmine(_roll):
-    global roll
-    global teade
-    if (_roll == "x"):
-        roll = "o"
-        teade = v2rvid.CVIOLET[color_os] + "Preagu on mängija " + v2rvid.CGREEN[color_os] + v2rvid.CURL[color_os] + f"{roll}" + v2rvid.CEND[color_os] + v2rvid.CVIOLET[color_os] + " kord" + v2rvid.CEND[color_os]
+def ChangeRole(_role):
+    global role
+    global Notific
+    if (_role == "x"):
+        role = "o"
+        Notific = Colors.CVIOLET[color_os] + "Preagu on mängija " + Colors.CGREEN[color_os] + Colors.CURL[color_os] + f"{role}" + Colors.CEND[color_os] + Colors.CVIOLET[color_os] + " kord" + Colors.CEND[color_os]
     else:
-        roll = "x"
-        teade = v2rvid.CVIOLET[color_os] + "Preagu on mängija " + v2rvid.CURL[color_os] + v2rvid.CGREY[color_os] + f"{roll}" + v2rvid.CEND[color_os] + v2rvid.CVIOLET[color_os] + " kord" + v2rvid.CEND[color_os]
+        role = "x"
+        Notific = Colors.CVIOLET[color_os] + "Preagu on mängija " + Colors.CURL[color_os] + Colors.CGREY[color_os] + f"{role}" + Colors.CEND[color_os] + Colors.CVIOLET[color_os] + " kord" + Colors.CEND[color_os]
 # massiivist mitme elemedi korraga accessimine
 # massiiv[1:3] => ühest kolmeni elemendid
 
 # ==========================
 # Start
 # ==========================
-if (platvorm == "Windows"):
+if (platform == "Windows"):
     color_os = 1
 else:
     color_os = 0  
-# print(v2rvid.CGREEN2[color_os])
+# print(Colors.CGREEN2[color_os])
 # while True:
 #     print      
-tyhjenda_ekraan()
-kuva_tabel()
+ClearScreen()
+DisplayTable()
 
-kysi_roll()
-for x in range(4):
-    kysi_koordinaadid()
-    sisu_seis_ok = sisu_kontroll(rida, veerg)
+AskRole()
+for x in range(2):
+    AskCoordinates()
+    sisu_seis_ok = sisu_kontrole(row, column)
     while (not sisu_seis_ok):
-        veateade = v2rvid.CWHITE2[color_os] + "Seal on juba olemas"
-        kysi_koordinaadid()
-        sisu_seis_ok = sisu_kontroll(rida, veerg)
-    sisu_t2itmine(rida, veerg, roll)
-    rolli_muutmine(roll)
-print(hetke_seis)
+        ErrorMsg = Colors.CWHITE2[color_os] + "Seal on juba olemas"
+        AskCoordinates()
+        sisu_seis_ok = sisu_kontrole(row, column)
+    FillArray(row, column, role)
+    ChangeRole(role)
+print(CurState)
