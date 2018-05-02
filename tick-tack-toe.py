@@ -1,6 +1,11 @@
 import os  # for os operations
 import platform # os platform tools
 import time
+if (platform == "Windows"):
+    color_os = 1
+else:
+    color_os = 0
+
 # ====================
 # Colors
 # ====================
@@ -60,7 +65,10 @@ RolePicked = False
 role = ""
 GameLooping = True
 WriteData = 0
-CurState = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+CurState = [
+    [0, 0, 0], 
+    [0, 0, 0],
+    [0, 0, 0]]
 row = ""
 column = ""
 Notific = ""
@@ -81,7 +89,7 @@ disp_O_win_color = Colors.CBLINK[color_os] + Colors.CGREEN[color_os] # + Colors.
 PlayAgainCol = Colors.CYELLOW[color_os]
 
 # Table Stuff
-dispRow_separator = tableColor + "        -----------------------" + Colors.CEND[color_os]
+dispRow_separator = tableColor + "        ----------------------- " + Colors.CEND[color_os]
 dispEmptyCell = tableColor + "       |" + Colors.CEND[color_os]
 
 disp_X_Line_1 = disp_X_color + "x     x" + Colors.CEND[color_os] + tableColor + "|" + Colors.CEND[color_os]
@@ -105,7 +113,22 @@ dispRow_1_number = tableColor + "   1   |" + Colors.CEND[color_os]
 dispRow_2_number = tableColor + "   2   |" + Colors.CEND[color_os]
 dispRow_3_number = tableColor + "   3   |" + Colors.CEND[color_os]
 
-dispRows = [[["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"]], [["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"]], [["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"]]]
+dispRows = [
+    [
+        ["0", "0", "0", "0"], 
+        ["0", "0", "0", "0"], 
+        ["0", "0", "0", "0"]
+    ], 
+    [
+        ["0", "0", "0", "0"], 
+        ["0", "0", "0", "0"], 
+        ["0", "0", "0", "0"]
+    ], 
+    [
+        ["0", "0", "0", "0"], 
+        ["0", "0", "0", "0"], 
+        ["0", "0", "0", "0"]
+    ]]
 
 # Debug Data
 debugData = 1
@@ -115,7 +138,7 @@ def debug_fn():
     global DD_2
     global DD_3
     global CurState
-    DD_head = ["         DEBUG DATA",""]
+    DD_head = ["      CurState", ""]
     DD_1 = [f"       {CurState[0][0]}     {CurState[0][1]}     {CurState[0][2]}",""]
     DD_2 = [f"       {CurState[1][0]}     {CurState[1][1]}     {CurState[1][2]}",""]
     DD_3 = [f"       {CurState[2][0]}     {CurState[2][1]}     {CurState[2][2]}",""]
@@ -143,14 +166,14 @@ def DisplayTable():
     print(dispRow_separator)
     print(dispRows[0][0][0]+dispRows[0][0][1]+dispRows[0][0][2]+dispRows[0][0][3] + DD_head[debugData])
     print(dispRows[0][1][0]+dispRows[0][1][1]+dispRows[0][1][2]+dispRows[0][1][3] + DD_1[debugData])
-    print(dispRows[0][2][0]+dispRows[0][2][1]+dispRows[0][2][2]+dispRows[0][2][3])
-    print(dispRow_separator)
+    print(dispRows[0][2][0]+dispRows[0][2][1]+dispRows[0][2][2]+dispRows[0][2][3] + DD_2[debugData])
+    print(dispRow_separator + DD_3[debugData])
     print(dispRows[1][0][0]+dispRows[1][0][1]+dispRows[1][0][2]+dispRows[1][0][3])
-    print(dispRows[1][1][0]+dispRows[1][1][1]+dispRows[1][1][2]+dispRows[1][1][3] + DD_2[debugData])
+    print(dispRows[1][1][0]+dispRows[1][1][1]+dispRows[1][1][2]+dispRows[1][1][3])
     print(dispRows[1][2][0]+dispRows[1][2][1]+dispRows[1][2][2]+dispRows[1][2][3])
     print(dispRow_separator)
     print(dispRows[2][0][0]+dispRows[2][0][1]+dispRows[2][0][2]+dispRows[2][0][3])
-    print(dispRows[2][1][0]+dispRows[2][1][1]+dispRows[2][1][2]+dispRows[2][1][3] + DD_3[debugData])
+    print(dispRows[2][1][0]+dispRows[2][1][1]+dispRows[2][1][2]+dispRows[2][1][3])
     print(dispRows[2][2][0]+dispRows[2][2][1]+dispRows[2][2][2]+dispRows[2][2][3])
     print(dispRow_separator)
     print("")
@@ -267,8 +290,11 @@ def CalcGameState():
 
 # -------------------------------------------
 def TableSetup(_type = "initial", _winStatParam1 = 0, _winStatParam2 = 0, _winner = 0):
+    global dispRows
     _winner = int(_winner) # <- necessary because otherwise value of _winner messes up for some reason
-    if (_type == "initial"):                
+    if (_type == "initial"):
+        # print("tere")
+        # var_dump(_type)
         for row in range(0, 3):
             for line in range(0, 3):
                 for cell in range(0, 4):
@@ -278,6 +304,7 @@ def TableSetup(_type = "initial", _winStatParam1 = 0, _winStatParam2 = 0, _winne
                         dispRows[2][1][0] = dispRow_3_number
                     else:
                         dispRows[row][line][cell] = dispEmptyCell
+             #           var_dump(dispRows[row][line][cell])
     if (_type == "final"):
         if(_winStatParam1 == "row"):
             for _row_cell in range(3):    
@@ -328,10 +355,35 @@ def TableSetup(_type = "initial", _winStatParam1 = 0, _winStatParam2 = 0, _winne
                             dispRows[_diagonal_rise2][1][_diagonal_rise1+1] = disp_O_Winner_Line_2
                             dispRows[_diagonal_rise2][2][_diagonal_rise1+1] = disp_O_Winner_Line_3
                             _diagonal_rise1 = _diagonal_rise1 + 1
-
-
+    print("miinus")
+    input
 # -------------------------------------------
-def var_dump(_muutuja = ""):
+
+def PlayAgainFn():
+    global PlayAgainCol
+    global GameLooping
+    global CurState
+    global GameOver
+    global RolePicked
+
+    PlayAgain = input(PlayAgainCol + "--- Would you like to play again? --- (Y/N) " + Colors.CEND[color_os])
+    while True:
+        if (PlayAgain == "N" or PlayAgain == "n" or PlayAgain == "Y" or PlayAgain == "y"):
+            if (PlayAgain == "N" or PlayAgain == "n"):
+                GameLooping = False
+                return False
+            else:  # reset variables
+                CurState = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+                GameOver = False
+                RolePicked = False
+                return True
+        else:
+            PlayAgain = input(PlayAgainCol + "Y or N only " + Colors.CEND[color_os]) 
+#    return False               
+# -------------------------------------------
+
+
+def var_dump(_muutuja=""):
     print(f"DEBUG: muutuja väärtus on {_muutuja}")
     input()
 # -------------------------------------------
@@ -400,16 +452,15 @@ while GameLooping:
     disp_X_win_color = Colors.CBLINK[color_os] + Colors.CGREEN[color_os] # + Colors.CGREYBG[color_os]
     disp_O_win_color = Colors.CBLINK[color_os] + Colors.CGREEN[color_os] # + Colors.CYELLOWBG[color_os]
 
-    if (platform == "Windows"):
-        color_os = 1
-    else:
-        color_os = 0  
     ClearScreen()
     TableSetup("initial")
     DisplayTable()
     AskRole()
     while (GameOver == False):
         for x in range(9):
+            if (x > 2):
+                GameOver = True
+                break
             AskCoordinates()
             Content_ok = Chck_if_exists(row, column)
 
@@ -418,38 +469,47 @@ while GameLooping:
                 AskCoordinates()
                 Content_ok = Chck_if_exists(row, column)
             FillArray(row, column, WriteData)
-            _winnerTestResult = WinnerCheck.test() 
+            _winnerTestResult = WinnerCheck.test()
             if (_winnerTestResult == 1 or _winnerTestResult == -1):
                 GameOver = True
-                break   # <- dont forget to break out from 'for' loops !!! While won't work otherwise
-            ChangeRole(role)
-            CalcGameState()
-            ClearScreen()
-            DisplayTable()
-    TableSetup("final", WinningState[0], WinningState[1], Winner)
-    ClearScreen()
-    DisplayTable()
-    GameOver = False
-    RolePicked = False
-    Winner = int(Winner)
-    if (Winner == 1):
-        Notific = f"Congrats! Player" + Colors.CWHITE[color_os] + " \'X\'" + Colors.CEND[color_os] + " you won!"
-    else:
-        Notific = f"Congrats! Player" + Colors.CWHITE[color_os] + " \'O\'" + Colors.CEND[color_os] + " you won!"
-    ClearScreen()
-    DisplayTable()
-    time.sleep(2)
-    PlayAgain = input(PlayAgainCol + "--- Would you like to play again? --- (Y/N) " + Colors.CEND[color_os])
-    while True:
-        if (PlayAgain == "N" or PlayAgain == "n" or PlayAgain == "Y" or PlayAgain == "y"):
-            if (PlayAgain == "N" or PlayAgain == "n"):
-                GameLooping = False
                 break
             else:
-                CurState = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-                break  
-        else:
-            PlayAgain = input(PlayAgainCol + "Y or N only " + Colors.CEND[color_os])
+                ChangeRole(role)
+                CalcGameState()
+                ClearScreen()
+                DisplayTable()
+#           break
+        if (x > 2):
+            Notific = f"Draw!"
+            ClearScreen()
+            DisplayTable()
+            time.sleep(1)
+            PlayingContinues = PlayAgainFn()
+            if (not PlayingContinues):
+                break
+            else:
+                TableSetup("inital")
+                ClearScreen()
+                DisplayTable()
+
+        else:   
+            TableSetup("final", WinningState[0], WinningState[1], Winner)
+            ClearScreen()
+            DisplayTable()
+            Winner = int(Winner)
+            if (Winner == 1):
+                Notific = f"Congrats! Player" + Colors.CWHITE[color_os] + " \'X\'" + Colors.CEND[color_os] + " you won!"
+            else:
+                Notific = f"Congrats! Player" + Colors.CWHITE[color_os] + " \'O\'" + Colors.CEND[color_os] + " you won!"
+            ClearScreen()
+            DisplayTable()
+            DisplayTable()
+            if (not PlayAgainFn()):
+                break
+            else:
+                TableSetup("inital")
+
+            
 ClearScreen()
 print("")
 print("")
