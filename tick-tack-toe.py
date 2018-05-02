@@ -431,7 +431,8 @@ while GameLooping:
     DisplayTable()
     GameOver = False
     RolePicked = False
-    if (Winner == 0):
+    Winner = int(Winner)
+    if (Winner == 1):
         Notific = f"Congrats! Player" + Colors.CWHITE[color_os] + " \'X\'" + Colors.CEND[color_os] + " you won!"
     else:
         Notific = f"Congrats! Player" + Colors.CWHITE[color_os] + " \'O\'" + Colors.CEND[color_os] + " you won!"
