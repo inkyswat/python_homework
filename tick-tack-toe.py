@@ -74,11 +74,14 @@ column = ""
 Notific = ""
 ErrorMsg = ""
 GameOver = False
+GameDraw = False
 Winner = 2
 WinningState = ["",""]
 TestMode = 0
 WinningStats = ""
 GameIterations = 0
+X_wins = 0
+O_wins = 0
 # colors
 tableColor = Colors.CBEIGE[color_os]
 disp_X_color = Colors.CBLACK[color_os] + Colors.CGREYBG[color_os]
@@ -137,15 +140,26 @@ def debug_fn():
     global DD_1
     global DD_2
     global DD_3
+    global DD_4
+    global DD_5
+    global DD_6
     global CurState
-    DD_head = ["      CurState", ""]
+    DD_head = ["    " + Colors.CWHITE[color_os] + Colors.CBOLD[color_os] + "CurState" + Colors.CEND[color_os], ""]
     DD_1 = [f"       {CurState[0][0]}     {CurState[0][1]}     {CurState[0][2]}",""]
     DD_2 = [f"       {CurState[1][0]}     {CurState[1][1]}     {CurState[1][2]}",""]
     DD_3 = [f"       {CurState[2][0]}     {CurState[2][1]}     {CurState[2][2]}",""]
+    DD_4 = [f"    " + Colors.CWHITE[color_os] + Colors.CBOLD[color_os] + "GameIterations = " + Colors.CEND[color_os] + f"{GameIterations}", ""]
+    DD_5 = [f"    " + Colors.CWHITE[color_os] + Colors.CBOLD[color_os] + "Player \'X\' wins = " + Colors.CEND[color_os] + f"{X_wins}", ""]
+    DD_6 = [f"    " + Colors.CWHITE[color_os] + Colors.CBOLD[color_os] + "Player \'O\' wins = " + Colors.CEND[color_os] + f"{O_wins}", ""]
 # ====================
 # Functions
 # ====================
-
+def debugToggle():
+    global debugData
+    if (debugData == 1):
+        debugData = 0
+    else:
+        debugData = 1
 def ClearScreen():
 	os.system('cls' if os.name=='nt' else 'clear')
 # -------------------------------------------
@@ -159,7 +173,10 @@ def DisplayTable():
     global DD_1
     global DD_2
     global DD_3
-    debug_fn()
+    global DD_4
+    global DD_5
+    global DD_6
+    debug_fn() # for realoading debug vars
     print(tableColor)
     print("           A       B       C")
     print("")
@@ -169,10 +186,10 @@ def DisplayTable():
     print(dispRows[0][2][0]+dispRows[0][2][1]+dispRows[0][2][2]+dispRows[0][2][3] + DD_2[debugData])
     print(dispRow_separator + DD_3[debugData])
     print(dispRows[1][0][0]+dispRows[1][0][1]+dispRows[1][0][2]+dispRows[1][0][3])
-    print(dispRows[1][1][0]+dispRows[1][1][1]+dispRows[1][1][2]+dispRows[1][1][3])
+    print(dispRows[1][1][0]+dispRows[1][1][1]+dispRows[1][1][2]+dispRows[1][1][3] + DD_4[debugData])
     print(dispRows[1][2][0]+dispRows[1][2][1]+dispRows[1][2][2]+dispRows[1][2][3])
-    print(dispRow_separator)
-    print(dispRows[2][0][0]+dispRows[2][0][1]+dispRows[2][0][2]+dispRows[2][0][3])
+    print(dispRow_separator + DD_5[debugData])
+    print(dispRows[2][0][0]+dispRows[2][0][1]+dispRows[2][0][2]+dispRows[2][0][3] + DD_6[debugData])
     print(dispRows[2][1][0]+dispRows[2][1][1]+dispRows[2][1][2]+dispRows[2][1][3])
     print(dispRows[2][2][0]+dispRows[2][2][1]+dispRows[2][2][2]+dispRows[2][2][3])
     print(dispRow_separator)
@@ -234,12 +251,12 @@ def AskRole():
                 RolePicked = True
                 if (role == "x"):
                     Notific = Colors.CVIOLET[color_os] + "It is your turn " + Colors.CBOLD[color_os] + Colors.CGREY[color_os] +  Colors.CURL[color_os] + f"{role}" + Colors.CEND[color_os]
-                    WriteData = 1
+                    WriteData = 1 # <- for 'x' is -1
                 else:
                     Notific = Colors.CVIOLET[color_os] + "It is your turn " + Colors.CBOLD[color_os] + Colors.CYELLOW[color_os] + Colors.CURL[color_os] + f"{role}" + Colors.CEND[color_os]
                     WriteData = -1 # <- for 'o' is -1
             else:
-                debugData = 0       
+                debugToggle()
         else:
             RolePicked = False
 # -------------------------------------------
@@ -275,7 +292,7 @@ def ChangeRole(_role):
 
 # -------------------------------------------
 # calcutates where results will be placed for displaying
-def CalcGameState():
+def UpdateDispArray():
     global CurState
     for row in range(0, 3):
         for cell in range(0, 3):
@@ -289,74 +306,69 @@ def CalcGameState():
                 dispRows[row][2][cell+1] = disp_X_Line_3
 
 # -------------------------------------------
-def TableSetup(_type = "initial", _winStatParam1 = 0, _winStatParam2 = 0, _winner = 0):
+def TableSetup_init():
     global dispRows
-    _winner = int(_winner) # <- necessary because otherwise value of _winner messes up for some reason
-    if (_type == "initial"):
-        # print("tere")
-        # var_dump(_type)
-        for row in range(0, 3):
-            for line in range(0, 3):
-                for cell in range(0, 4):
-                    if ((row == 0 and line == 1 and cell == 0) or (row == 1 and line == 1 and cell == 0) or (row == 2 and line == 1 and cell == 0)):
-                        dispRows[0][1][0] = dispRow_1_number
-                        dispRows[1][1][0] = dispRow_2_number
-                        dispRows[2][1][0] = dispRow_3_number
-                    else:
-                        dispRows[row][line][cell] = dispEmptyCell
-             #           var_dump(dispRows[row][line][cell])
-    if (_type == "final"):
-        if(_winStatParam1 == "row"):
-            for _row_cell in range(3):    
-                if (_winner == 1):
-                        dispRows[_winStatParam2-1][0][_row_cell+1] = disp_X_Winner_Line_1
-                        dispRows[_winStatParam2-1][1][_row_cell+1] = disp_X_Winner_Line_2
-                        dispRows[_winStatParam2-1][2][_row_cell+1] = disp_X_Winner_Line_3
-                else:    
-                        dispRows[_winStatParam2-1][0][_row_cell+1] = disp_O_Winner_Line_1
-                        dispRows[_winStatParam2-1][1][_row_cell+1] = disp_O_Winner_Line_2
-                        dispRows[_winStatParam2-1][2][_row_cell+1] = disp_O_Winner_Line_3
+    for row in range(0, 3):
+        for line in range(0, 3):
+            for cell in range(0, 4):
+                if ((row == 0 and line == 1 and cell == 0) or (row == 1 and line == 1 and cell == 0) or (row == 2 and line == 1 and cell == 0)):
+                    dispRows[0][1][0] = dispRow_1_number
+                    dispRows[1][1][0] = dispRow_2_number
+                    dispRows[2][1][0] = dispRow_3_number
+                else:
+                    dispRows[row][line][cell] = dispEmptyCell
+# -------------------------------------------
 
-    if (_type == "final"):
-        if(_winStatParam1 == "column"):
-            for _column_cell in range(3):
-                if (_winner == 1):
-                        dispRows[_column_cell][0][_winStatParam2] = disp_X_Winner_Line_1
-                        dispRows[_column_cell][1][_winStatParam2] = disp_X_Winner_Line_2
-                        dispRows[_column_cell][2][_winStatParam2] = disp_X_Winner_Line_3
-                else:    
-                        dispRows[_column_cell][0][_winStatParam2] = disp_O_Winner_Line_1
-                        dispRows[_column_cell][1][_winStatParam2] = disp_O_Winner_Line_2
-                        dispRows[_column_cell][2][_winStatParam2] = disp_O_Winner_Line_3
+def TableSetup_final(_winStatParam1, _winStatParam2, _winner):
+    global dispRows
+    _winner = int(_winner)
+    _winStatParam2 = int(_winStatParam2)
+    if(_winStatParam1 == "row"):
+        for _row_cell in range(3):    
+            if (_winner == 1):
+                    dispRows[_winStatParam2-1][0][_row_cell+1] = disp_X_Winner_Line_1
+                    dispRows[_winStatParam2-1][1][_row_cell+1] = disp_X_Winner_Line_2
+                    dispRows[_winStatParam2-1][2][_row_cell+1] = disp_X_Winner_Line_3
+            else:    
+                    dispRows[_winStatParam2-1][0][_row_cell+1] = disp_O_Winner_Line_1
+                    dispRows[_winStatParam2-1][1][_row_cell+1] = disp_O_Winner_Line_2
+                    dispRows[_winStatParam2-1][2][_row_cell+1] = disp_O_Winner_Line_3
 
-            
-    if (_type == "final"):
-        if(_winStatParam1 == "diagonal"):
-            if(_winStatParam2 == -1):
-                for _diagonal_fall in range(3):
-                    if (_winner == 1):
-                            dispRows[_diagonal_fall][0][_diagonal_fall+1] = disp_X_Winner_Line_1
-                            dispRows[_diagonal_fall][1][_diagonal_fall+1] = disp_X_Winner_Line_2
-                            dispRows[_diagonal_fall][2][_diagonal_fall+1] = disp_X_Winner_Line_3
-                    else:
-                            dispRows[_diagonal_fall][0][_diagonal_fall+1] = disp_O_Winner_Line_1
-                            dispRows[_diagonal_fall][1][_diagonal_fall+1] = disp_O_Winner_Line_2
-                            dispRows[_diagonal_fall][2][_diagonal_fall+1] = disp_O_Winner_Line_3
-            if(_winStatParam2 == 1):
-                _diagonal_rise1 = 0
-                for _diagonal_rise2 in range(2, -1, -1):
-                    if (_winner == 1):
-                            dispRows[_diagonal_rise2][0][_diagonal_rise1+1] = disp_X_Winner_Line_1
-                            dispRows[_diagonal_rise2][1][_diagonal_rise1+1] = disp_X_Winner_Line_2
-                            dispRows[_diagonal_rise2][2][_diagonal_rise1+1] = disp_X_Winner_Line_3
-                            _diagonal_rise1 = _diagonal_rise1 + 1
-                    else:
-                            dispRows[_diagonal_rise2][0][_diagonal_rise1+1] = disp_O_Winner_Line_1
-                            dispRows[_diagonal_rise2][1][_diagonal_rise1+1] = disp_O_Winner_Line_2
-                            dispRows[_diagonal_rise2][2][_diagonal_rise1+1] = disp_O_Winner_Line_3
-                            _diagonal_rise1 = _diagonal_rise1 + 1
-    print("miinus")
-    input
+    if(_winStatParam1 == "column"):
+        for _column_cell in range(3):
+            if (_winner == 1):
+                    dispRows[_column_cell][0][_winStatParam2] = disp_X_Winner_Line_1
+                    dispRows[_column_cell][1][_winStatParam2] = disp_X_Winner_Line_2
+                    dispRows[_column_cell][2][_winStatParam2] = disp_X_Winner_Line_3
+            else:    
+                    dispRows[_column_cell][0][_winStatParam2] = disp_O_Winner_Line_1
+                    dispRows[_column_cell][1][_winStatParam2] = disp_O_Winner_Line_2
+                    dispRows[_column_cell][2][_winStatParam2] = disp_O_Winner_Line_3
+
+    if(_winStatParam1 == "diagonal"):
+        if(_winStatParam2 == -1):
+            for _diagonal_fall in range(3):
+                if (_winner == 1):
+                    dispRows[_diagonal_fall][0][_diagonal_fall+1] = disp_X_Winner_Line_1
+                    dispRows[_diagonal_fall][1][_diagonal_fall+1] = disp_X_Winner_Line_2
+                    dispRows[_diagonal_fall][2][_diagonal_fall+1] = disp_X_Winner_Line_3
+                else:
+                    dispRows[_diagonal_fall][0][_diagonal_fall+1] = disp_O_Winner_Line_1
+                    dispRows[_diagonal_fall][1][_diagonal_fall+1] = disp_O_Winner_Line_2
+                    dispRows[_diagonal_fall][2][_diagonal_fall+1] = disp_O_Winner_Line_3
+        if(_winStatParam2 == 1):
+            _diagonal_rise1 = 0
+            for _diagonal_rise2 in range(2, -1, -1):
+                if (_winner == 1):
+                    dispRows[_diagonal_rise2][0][_diagonal_rise1+1] = disp_X_Winner_Line_1
+                    dispRows[_diagonal_rise2][1][_diagonal_rise1+1] = disp_X_Winner_Line_2
+                    dispRows[_diagonal_rise2][2][_diagonal_rise1+1] = disp_X_Winner_Line_3
+                    _diagonal_rise1 = _diagonal_rise1 + 1
+                else:
+                    dispRows[_diagonal_rise2][0][_diagonal_rise1+1] = disp_O_Winner_Line_1
+                    dispRows[_diagonal_rise2][1][_diagonal_rise1+1] = disp_O_Winner_Line_2
+                    dispRows[_diagonal_rise2][2][_diagonal_rise1+1] = disp_O_Winner_Line_3
+                    _diagonal_rise1 = _diagonal_rise1 + 1
 # -------------------------------------------
 
 def PlayAgainFn():
@@ -365,6 +377,7 @@ def PlayAgainFn():
     global CurState
     global GameOver
     global RolePicked
+    global Notific
 
     PlayAgain = input(PlayAgainCol + "--- Would you like to play again? --- (Y/N) " + Colors.CEND[color_os])
     while True:
@@ -376,6 +389,7 @@ def PlayAgainFn():
                 CurState = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
                 GameOver = False
                 RolePicked = False
+                Notific = ""
                 return True
         else:
             PlayAgain = input(PlayAgainCol + "Y or N only " + Colors.CEND[color_os]) 
@@ -438,13 +452,14 @@ class WinnerCheck():
                 return -1 # < if winner is o 
         return
 
-
-
-
-# ==========================
-# Start
-# ==========================
-while GameLooping:
+# -------------------------------------------
+def setWinningCols():
+    global tableColor
+    global disp_O_color
+    global disp_X_color
+    global ErrorMsgCol
+    global disp_X_win_color
+    global disp_O_win_color
     tableColor = Colors.CBEIGE[color_os]
     disp_X_color = Colors.CBLACK[color_os] + Colors.CGREYBG[color_os]
     disp_O_color = Colors.CBLACK[color_os] + Colors.CYELLOWBG[color_os]
@@ -452,15 +467,18 @@ while GameLooping:
     disp_X_win_color = Colors.CBLINK[color_os] + Colors.CGREEN[color_os] # + Colors.CGREYBG[color_os]
     disp_O_win_color = Colors.CBLINK[color_os] + Colors.CGREEN[color_os] # + Colors.CYELLOWBG[color_os]
 
+
+# ==========================
+# Start
+# ==========================
+while GameLooping:
+    GameOver = False
     ClearScreen()
-    TableSetup("initial")
+    TableSetup_init()
     DisplayTable()
     AskRole()
     while (GameOver == False):
         for x in range(9):
-            if (x > 2):
-                GameOver = True
-                break
             AskCoordinates()
             Content_ok = Chck_if_exists(row, column)
 
@@ -470,44 +488,57 @@ while GameLooping:
                 Content_ok = Chck_if_exists(row, column)
             FillArray(row, column, WriteData)
             _winnerTestResult = WinnerCheck.test()
+
             if (_winnerTestResult == 1 or _winnerTestResult == -1):
-                GameOver = True
+                break
+            if (x == 8):
+                GameDraw = True
                 break
             else:
                 ChangeRole(role)
-                CalcGameState()
+                UpdateDispArray()
                 ClearScreen()
                 DisplayTable()
 #           break
-        if (x > 2):
+        if (GameDraw):
             Notific = f"Draw!"
+            UpdateDispArray()
             ClearScreen()
             DisplayTable()
             time.sleep(1)
-            PlayingContinues = PlayAgainFn()
-            if (not PlayingContinues):
+
+            if (not PlayAgainFn()):
                 break
             else:
-                TableSetup("inital")
+                GameOver = True
+                TableSetup_init()
                 ClearScreen()
                 DisplayTable()
-
+                GameIterations = GameIterations + 1
+            
         else:   
-            TableSetup("final", WinningState[0], WinningState[1], Winner)
+            setWinningCols()
+            TableSetup_final(WinningState[0], WinningState[1], Winner)
             ClearScreen()
             DisplayTable()
             Winner = int(Winner)
             if (Winner == 1):
+                X_wins = X_wins + 1
                 Notific = f"Congrats! Player" + Colors.CWHITE[color_os] + " \'X\'" + Colors.CEND[color_os] + " you won!"
             else:
+                O_wins = O_wins + 1
                 Notific = f"Congrats! Player" + Colors.CWHITE[color_os] + " \'O\'" + Colors.CEND[color_os] + " you won!"
             ClearScreen()
             DisplayTable()
-            DisplayTable()
+            time.sleep(1)
+
             if (not PlayAgainFn()):
                 break
             else:
-                TableSetup("inital")
+                GameOver = True
+                TableSetup_init()
+                GameIterations = GameIterations + 1
+
 
             
 ClearScreen()
