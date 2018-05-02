@@ -1,10 +1,6 @@
 import os  # for os operations
 import platform # os platform tools
 import time
-if (platform == "Windows"):
-    color_os = 1
-else:
-    color_os = 0
 
 # ====================
 # Colors
@@ -92,7 +88,7 @@ disp_O_win_color = Colors.CBLINK[color_os] + Colors.CGREEN[color_os] # + Colors.
 PlayAgainCol = Colors.CYELLOW[color_os]
 
 # Table Stuff
-dispRow_separator = tableColor + "        ----------------------- " + Colors.CEND[color_os]
+dispRow_separator = tableColor + " " * 8 + "-" * 23 + " " + Colors.CEND[color_os]
 dispEmptyCell = tableColor + "       |" + Colors.CEND[color_os]
 
 disp_X_Line_1 = disp_X_color + "x     x" + Colors.CEND[color_os] + tableColor + "|" + Colors.CEND[color_os]
@@ -197,7 +193,7 @@ def DisplayTable():
     print(Notific)
     print(ErrorMsg)
     print(WinningStats)
-    print(Colors.CGREY[color_os] + "__________________________________________")
+    print(Colors.CGREY[color_os] + "_" * 40)
 # -------------------------------------------
 
 
@@ -471,6 +467,11 @@ def setWinningCols():
 # ==========================
 # Start
 # ==========================
+if (platform == "Windows"):
+    color_os = 1
+else:
+    color_os = 0
+
 while GameLooping:
     GameOver = False
     ClearScreen()
