@@ -531,7 +531,7 @@ while GameLooping:
                 Notific = f"Congrats! Player" + Colors.CWHITE[color_os] + " \'O\'" + Colors.CEND[color_os] + " you won!"
             ClearScreen()
             DisplayTable()
-            time.sleep(1)
+            time.sleep(1.5)
 
             if (not PlayAgainFn()):
                 break
