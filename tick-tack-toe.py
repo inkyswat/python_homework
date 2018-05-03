@@ -55,8 +55,12 @@ class Colors:
 # -------------------------------------------
 # variables
 # -------------------------------------------
-platform = platform.system()
 color_os = 0
+platform = platform.system()
+if (platform == "Windows"):
+    color_os = 1
+else:
+    color_os = 0
 RolePicked = False
 role = ""
 GameLooping = True
@@ -467,10 +471,6 @@ def setWinningCols():
 # ==========================
 # Start
 # ==========================
-if (platform == "Windows"):
-    color_os = 1
-else:
-    color_os = 0
 
 while GameLooping:
     GameOver = False
