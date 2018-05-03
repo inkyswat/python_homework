@@ -160,6 +160,9 @@ def debugToggle():
         debugData = 0
     else:
         debugData = 1
+# -------------------------------------------
+
+
 def ClearScreen():
 	os.system('cls' if os.name=='nt' else 'clear')
 # -------------------------------------------
@@ -417,8 +420,7 @@ class WinnerCheck():
                     if (WinnerAdder == 3 or WinnerAdder == -3):
                         WinningState = ["row", row+1]
                         return WinnerAdder
-                    WinnerAdder = CurState[0][column] + \
-                        CurState[1][column] + CurState[2][column]
+                    WinnerAdder = CurState[0][column] + CurState[1][column] + CurState[2][column]
                     if (WinnerAdder == 3 or WinnerAdder == -3):
                         WinningState = ["column", column+1]
                         return WinnerAdder
@@ -500,7 +502,6 @@ while GameLooping:
                 UpdateDispArray()
                 ClearScreen()
                 DisplayTable()
-#           break
         if (GameDraw):
             Notific = f"Draw!"
             UpdateDispArray()
@@ -518,6 +519,7 @@ while GameLooping:
                 GameIterations = GameIterations + 1
             
         else:   
+            GameIterations = GameIterations + 1
             setWinningCols()
             TableSetup_final(WinningState[0], WinningState[1], Winner)
             ClearScreen()
@@ -538,15 +540,27 @@ while GameLooping:
             else:
                 GameOver = True
                 TableSetup_init()
-                GameIterations = GameIterations + 1
 
 
             
 ClearScreen()
+print("" + "–" * 47)
+print("|"+Colors.CGREEN2[color_os] + "Game Stats:" + Colors.CEND[color_os])
+if (X_wins == 1):
+    print("|  \'X\' won " + Colors.CBEIGE2[color_os] + f"{X_wins}" + Colors.CEND[color_os] + " game")
+else:
+    print("|  \'X\' won " + Colors.CBEIGE2[color_os] + f"{X_wins}" + Colors.CEND[color_os] + " games")
+
+if (X_wins == 1):
+    print("|  \'O\' won " + Colors.CBEIGE2[color_os] + f"{O_wins}" + Colors.CEND[color_os] + " game")
+else:
+    print("|  \'O\' won " + Colors.CBEIGE2[color_os] + f"{O_wins}" + Colors.CEND[color_os] + " games")
+print("|")
+if (GameIterations == 1):
+    print("|  You played " + Colors.CBEIGE2[color_os] + f"{GameIterations}" + Colors.CEND[color_os] + " game")
+else:
+    print("|  You played " + Colors.CBEIGE2[color_os] + f"{GameIterations}" + Colors.CEND[color_os] + " games")
+print("|")
+print("|" + Colors.CWHITE[color_os] + " -- Thank you for playing, have a nice day! --" + Colors.CEND[color_os])
+print(""+"-" * 47)
 print("")
-print("")
-print("")
-print("")
-print("-- Thank you for playing, have a nice day! --")
-time.sleep(1.7)
-ClearScreen()
