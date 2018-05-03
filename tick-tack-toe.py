@@ -247,9 +247,10 @@ def AskRole():
     while (not RolePicked):
         ClearScreen()
         DisplayTable()
-        role = input(Colors.CWHITE[color_os] + "      Who goes first \'o\' or \'x\'? " + Colors.CEND[color_os])
-        if (role == "o" or role == "x" or role == "O" or role == "X" or role == "debug"):
-            if (role != "debug"):
+        print(Colors.CWHITE[color_os] + "      Who goes first \'o\' or \'x\'? " + Colors.CEND[color_os])
+        role = input("      or press \'m\' for some back-end data ")
+        if (role == "o" or role == "x" or role == "O" or role == "X" or role == "m"):
+            if (role != "m"):
                 role = role.lower()
                 RolePicked = True
                 if (role == "x"):
