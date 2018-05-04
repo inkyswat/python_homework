@@ -145,9 +145,9 @@ def debug_fn():
     global DD_6
     global CurState
     DD_head = ["    " + Colors.CWHITE[color_os] + Colors.CBOLD[color_os] + "CurState" + Colors.CEND[color_os], ""]
-    DD_1 = [f"       {CurState[0][0]}     {CurState[0][1]}     {CurState[0][2]}",""]
-    DD_2 = [f"       {CurState[1][0]}     {CurState[1][1]}     {CurState[1][2]}",""]
-    DD_3 = [f"       {CurState[2][0]}     {CurState[2][1]}     {CurState[2][2]}",""]
+    DD_1 = [(f"      " + "{0:2d}    {1:2d}    {2:2d}".format(CurState[0][0], CurState[0][1], CurState[0][2])), ""]
+    DD_2 = [(f"      " + "{0:2d}    {1:2d}    {2:2d}".format(CurState[1][0], CurState[1][1], CurState[1][2])),""]
+    DD_3 = [(f"      " + "{0:2d}    {1:2d}    {2:2d}".format(CurState[2][0], CurState[2][1], CurState[2][2])),""]
     DD_4 = [f"    " + Colors.CWHITE[color_os] + Colors.CBOLD[color_os] + "GameIterations = " + Colors.CEND[color_os] + f"{GameIterations}", ""]
     DD_5 = [f"    " + Colors.CWHITE[color_os] + Colors.CBOLD[color_os] + "Player \'X\' wins = " + Colors.CEND[color_os] + f"{X_wins}", ""]
     DD_6 = [f"    " + Colors.CWHITE[color_os] + Colors.CBOLD[color_os] + "Player \'O\' wins = " + Colors.CEND[color_os] + f"{O_wins}", ""]
