@@ -552,7 +552,7 @@ if (X_wins == 1):
 else:
     print("|  \'X\' won " + Colors.CBEIGE2[color_os] + f"{X_wins}" + Colors.CEND[color_os] + " games")
 
-if (X_wins == 1):
+if (O_wins == 1):
     print("|  \'O\' won " + Colors.CBEIGE2[color_os] + f"{O_wins}" + Colors.CEND[color_os] + " game")
 else:
     print("|  \'O\' won " + Colors.CBEIGE2[color_os] + f"{O_wins}" + Colors.CEND[color_os] + " games")
